@@ -2,8 +2,8 @@ package com.vitor5bonelli.OneMessageChat.model
 
 import java.util.UUID
 
-data class Conversa (
+data class Chat (
     val id: String,
-    val mensagem: String,
-    val membros: List<UUID>
+    val message: String,
+    val members: List<UUID>
 )
