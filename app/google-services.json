@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "32756646942",
+    "project_id": "onemessageapp-ae6b3",
+    "storage_bucket": "onemessageapp-ae6b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32756646942:android:d5f97eb0d0edd851759a0f",
+        "android_client_info": {
+          "package_name": "com.vitor5bonelli.OneMessageChat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvqKhaEm01LC66-lMmLQbxjkpDZXsdVII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
