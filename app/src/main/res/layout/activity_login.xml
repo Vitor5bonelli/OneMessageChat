@@ -6,4 +6,92 @@
     android:layout_height="match_parent"
     tools:context=".view.LoginActivity">
 
+    <TextView
+        android:id="@+id/titleLoginTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ONE MESSAGE APP"
+        android:textColor="@color/darkblue"
+        android:background="@color/lightblue"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="25dp"
+        />
+
+    <TextView
+        android:id="@+id/emailLoginTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:textSize="22sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleLoginTV"
+        android:layout_margin="18dp"
+        />
+
+    <EditText
+        android:id="@+id/emailLoginET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailLoginTV"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        />
+
+    <TextView
+        android:id="@+id/passwordLoginTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:textSize="22sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailLoginET"
+        android:layout_margin="18dp"
+        />
+
+    <EditText
+        android:id="@+id/passwordLoginET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordLoginTV"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        />
+
+    <TextView
+        android:id="@+id/orLoginLoginTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Or Register"
+        android:textStyle="bold"
+        android:textColor="@color/darkblue"
+        android:textSize="22sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/registerLoginBTN"
+        android:layout_margin="18dp"
+        />
+
+    <Button
+        android:id="@+id/registerLoginBTN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/darkblue"
+        android:textColor="@color/lightblue"
+        android:text="Login"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="18dp"
+        android:padding="10dp"
+
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

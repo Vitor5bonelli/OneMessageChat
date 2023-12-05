@@ -12,4 +12,5 @@ class ChatListActivity : AppCompatActivity() {
         aclb = ActivityChatListBinding.inflate(layoutInflater)
         setContentView(aclb.root)
     }
+
 }
