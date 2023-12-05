@@ -2,6 +2,7 @@ package com.vitor5bonelli.OneMessageChat.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -21,7 +22,15 @@ class LoginActivity : AppCompatActivity() {
         auth = Firebase.auth
     }
 
-    private fun createUserWithEmailAndPassword(){
-
+    private fun signIn(email: String, password: String){
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if(task.isSuccessful){
+                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, "Login Error!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
 }
