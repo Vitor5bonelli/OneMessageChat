@@ -66,7 +66,7 @@
         />
 
     <TextView
-        android:id="@+id/orLoginLoginTV"
+        android:id="@+id/orRegisterLoginTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Or Register"
@@ -75,12 +75,12 @@
         android:textSize="22sp"
         android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/registerLoginBTN"
+        app:layout_constraintBottom_toTopOf="@id/LoginBTN"
         android:layout_margin="18dp"
         />
 
     <Button
-        android:id="@+id/registerLoginBTN"
+        android:id="@+id/LoginBTN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/darkblue"
