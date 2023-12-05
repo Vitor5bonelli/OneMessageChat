@@ -27,9 +27,25 @@ class RegisterActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        //Go to login page
         arb.orLoginTV.setOnClickListener{
             switchToLoginView()
         }
+
+        //Try to register
+        arb.registerBTN.setOnClickListener{
+            val username: String = arb.usernameET.text.toString()
+            val email: String = arb.emailET.text.toString()
+            val password: String = arb.passwordET.text.toString()
+
+            if(username.isEmpty() || email.isEmpty() || password.isEmpty()){
+                Toast.makeText(this, "Fields are empty!", Toast.LENGTH_LONG).show()
+            }
+            else{
+                createUser(email, password)
+            }
+        }
+
     }
 
     private fun createUser(email: String, password: String){
