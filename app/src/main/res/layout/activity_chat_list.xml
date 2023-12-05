@@ -29,10 +29,10 @@
             android:layout_height="80dp"
             android:src="@drawable/baseline_groups_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartof="@id/createGroupBTN"
             app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="@id/menuChatsCL"
-            app:layout_constraintTop_toTopOf="@id/menuChatsCL" />
+            app:layout_constraintTop_toTopOf="@id/menuChatsCL"
+            app:layout_constraintBottom_toBottomOf="@id/menuChatsCL"/>
 
         <ImageView
             android:id="@+id/createGroupBTN"
