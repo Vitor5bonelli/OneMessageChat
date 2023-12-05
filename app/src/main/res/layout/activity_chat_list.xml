@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".view.ChatListActivity">
 
-    <view class="androidx.appcompat.app.AlertController$RecycleListView"
-        android:layout_width=""
-        android:layout_height="">
 
-    </view>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/activity_chat_card"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
