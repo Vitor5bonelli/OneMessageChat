@@ -33,11 +33,15 @@ class LoginActivity : AppCompatActivity() {
 
         //Try to login
         alb.LoginBTN.setOnClickListener{
-            if ((alb.passwordLoginET.text.isBlank() || alb.passwordLoginET.text.isEmpty()) || (alb.emailLoginET.text.isBlank() || alb.emailLoginET.text.isEmpty()) ){
+
+            val email: String = alb.emailLoginET.text.toString()
+            val password: String = alb.passwordLoginET.text.toString()
+
+            if (email.isEmpty() || password.isEmpty() ){
                 Toast.makeText(this, "Fields are empty!", Toast.LENGTH_LONG).show()
             }
             else{
-                signIn(alb.emailLoginET.text.toString(), alb.passwordLoginET.text.toString())
+                signIn(email, password)
             }
         }
     }
