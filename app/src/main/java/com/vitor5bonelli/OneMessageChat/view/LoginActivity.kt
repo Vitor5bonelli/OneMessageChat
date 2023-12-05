@@ -49,6 +49,8 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if(task.isSuccessful){
                 Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+
+                switchToChatListView()
             }
             else{
                 Toast.makeText(this, "Login Error!", Toast.LENGTH_SHORT).show()
@@ -58,6 +60,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun switchToRegisterView(){
         val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
+        this.finish()
+    }
+
+    private fun switchToChatListView(){
+        val intent = Intent(this, ChatListActivity::class.java)
         startActivity(intent)
         this.finish()
     }

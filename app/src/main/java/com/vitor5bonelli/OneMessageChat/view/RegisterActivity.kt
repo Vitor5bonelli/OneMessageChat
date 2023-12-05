@@ -51,6 +51,8 @@ class RegisterActivity : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if(task.isSuccessful){
                 Toast.makeText(this, "User creation successful!", Toast.LENGTH_SHORT).show()
+
+                switchToLoginView()
             }
             else{
                 Toast.makeText(this, "User creation failed!", Toast.LENGTH_SHORT).show()
