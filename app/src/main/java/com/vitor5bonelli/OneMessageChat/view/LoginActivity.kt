@@ -7,7 +7,6 @@ import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
-import com.vitor5bonelli.OneMessageChat.R
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
