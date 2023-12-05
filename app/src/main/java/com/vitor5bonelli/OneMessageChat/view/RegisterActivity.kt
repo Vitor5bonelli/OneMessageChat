@@ -47,43 +47,36 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fields are empty!", Toast.LENGTH_LONG).show()
             }
             else{
-                createUser(email, password)
-                persistUser(username, email, password)
+                createUser(username, email, password)
                 switchToLoginView()
             }
         }
 
     }
 
-    private fun createUser(email: String, password: String){
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                Toast.makeText(this, "User creation successful!", Toast.LENGTH_SHORT).show()
+    private fun createUser(username: String, email: String, password: String){
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener { authResult ->
+                val user = authResult.user
+                val newUser = User(
+                    id = user?.uid ?: "",
+                    username = username,
+                    email = email,
+                    password = password
+                )
+
+                databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                databaseReference.child(newUser.id).setValue(newUser).addOnSuccessListener {
+                    Log.i("UserDatabaseSuccess", "$newUser")
+                    Toast.makeText(this, "User created successfully!", Toast.LENGTH_LONG).show()
+
+                }.addOnFailureListener {
+                    Log.i("UserDatabaseFail", "$newUser")
+                    Toast.makeText(this, "User creation failed!", Toast.LENGTH_LONG).show()
+                }
+            }.addOnFailureListener { exception ->
+                Toast.makeText(this, "${exception.message}", Toast.LENGTH_LONG).show()
             }
-            else{
-                Toast.makeText(this, "User creation failed!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun persistUser(username: String, email: String, password: String){
-
-        val newUser = User(
-            id = auth.uid.toString(),
-            username = username,
-            email = email,
-            password = password
-        )
-
-        //TODO: add verification for duplicated user
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        databaseReference.child(newUser.id).setValue(newUser).addOnSuccessListener {
-            Log.i("UserDatabaseSucess", "${newUser}")
-        }.addOnFailureListener{
-            Log.i("UserDatabaseFail", "${newUser}")
-        }
-
     }
 
     private fun switchToLoginView(){
