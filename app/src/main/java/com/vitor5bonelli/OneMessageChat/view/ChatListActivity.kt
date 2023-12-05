@@ -3,6 +3,7 @@ package com.vitor5bonelli.OneMessageChat.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -12,6 +13,7 @@ import com.vitor5bonelli.OneMessageChat.controller.ChatListAdapter
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityChatListBinding
 import com.vitor5bonelli.OneMessageChat.model.Chat
 import com.vitor5bonelli.OneMessageChat.model.User
+import java.util.UUID
 
 class ChatListActivity : AppCompatActivity() {
 
@@ -25,72 +27,29 @@ class ChatListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val chats = mutableListOf<Chat>()
-
-        val userUuid = intent.getStringExtra("uuid")
-
-        if (userUuid != null) {
-
-            getAllUserChats(userUuid) { subscribedChats ->
-                if (subscribedChats.isNotEmpty()) {
-                    for (chatId in subscribedChats) {
-                        getChatById(chatId) { chat ->
-                            if (chat != null) {
-                                chats.add(
-                                    Chat(
-                                        chat.id,
-                                        chat.message,
-                                        chat.members
-                                    )
-                                )
-                            } else {
-                                Log.d("ChatSearch:", "Chat with $chatId not found.")
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
+        val placeholderChats = mutableListOf<Chat>(
+            Chat(
+                id = "ZapDosBrabo",
+                message = "ZAPZAPZAPAZPAZPAPPA",
+                members = listOf(
+                    UUID.randomUUID(),
+                    UUID.randomUUID(),
+                    UUID.randomUUID()
+                )),
+            Chat(
+                id = "IlhaDaMonkeizada",
+                message = "become monke...",
+                members = listOf(
+                    UUID.randomUUID(),
+                    UUID.randomUUID(),
+                    UUID.randomUUID()
+                )
+            )
+        )
 
         val recyclerView = binding.recyclerView
-        recyclerView.adapter = ChatListAdapter(context = this, chats = chats)
-    }
-
-    private fun getAllUserChats(userUuid: String, callback: (List<String>) -> Unit) {
-        val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
-
-        databaseReference.child(userUuid).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val user = snapshot.getValue(User::class.java)
-                    val subscribedChats = user?.subscribedChats ?: emptyList()
-                    callback.invoke(subscribedChats)
-                } else {
-                    callback.invoke(emptyList())
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                callback.invoke(emptyList())
-            }
-        })
-    }
-
-    private fun getChatById(chatId: String, callback: (Chat?) -> Unit) {
-        val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
-
-        databaseReference.child(chatId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val chat = snapshot.getValue(Chat::class.java)
-                callback.invoke(chat)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                callback.invoke(null)
-            }
-        })
+        recyclerView.adapter = ChatListAdapter(context = this, chats = placeholderChats)
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
 }

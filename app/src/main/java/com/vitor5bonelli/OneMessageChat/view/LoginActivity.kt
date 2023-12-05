@@ -42,6 +42,8 @@ class LoginActivity : AppCompatActivity() {
 
             val email: String = alb.emailLoginET.text.toString()
             val password: String = alb.passwordLoginET.text.toString()
+            Log.i("email", email)
+            Log.i("senha", password)
 
             if (email.isEmpty() || password.isEmpty() ){
                 Toast.makeText(this, "Fields are empty!", Toast.LENGTH_LONG).show()
@@ -56,15 +58,8 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if(task.isSuccessful){
 
-                findUserUuidByEmail(email) { uuid ->
-                    if (uuid != null) {
-                        Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-                        switchToChatListView(uuid)
-
-                    } else {
-                        Log.i("Mail", "Not Found")
-                    }
-                }
+                Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
+                switchToChatListView()
 
             }
             else{
@@ -73,28 +68,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun findUserUuidByEmail(email: String, callback: (String?) -> Unit) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("users")
-
-        databaseReference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (childSnapshot in snapshot.children) {
-                        val uuidFound = childSnapshot.key
-                        callback.invoke(uuidFound)
-                        return
-                    }
-                }
-                callback.invoke(null)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.i("Mail", "Not Found")
-                callback.invoke(null)
-            }
-        })
-    }
 
     private fun switchToRegisterView(){
         val intent = Intent(this, RegisterActivity::class.java)
@@ -102,9 +75,8 @@ class LoginActivity : AppCompatActivity() {
         this.finish()
     }
 
-    private fun switchToChatListView(uuid: String){
+    private fun switchToChatListView(){
         val intent = Intent(this, ChatListActivity::class.java)
-        intent.putExtra("uuid", uuid)
         startActivity(intent)
         this.finish()
     }
