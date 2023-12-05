@@ -56,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
     private fun switchToRegisterView(){
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
+        this.finish()
     }
 
 }

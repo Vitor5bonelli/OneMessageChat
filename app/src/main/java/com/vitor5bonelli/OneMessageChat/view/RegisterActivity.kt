@@ -1,5 +1,6 @@
 package com.vitor5bonelli.OneMessageChat.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -23,6 +24,14 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        arb.orLoginTV.setOnClickListener{
+            switchToLoginView()
+        }
+    }
+
     private fun createUser(email: String, password: String){
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if(task.isSuccessful){
@@ -32,5 +41,12 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "User creation failed!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun switchToLoginView(){
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        this.finish()
+
     }
 }
