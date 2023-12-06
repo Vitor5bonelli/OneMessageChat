@@ -27,6 +27,14 @@ class ChatListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        binding.createGroupBTN.setOnClickListener{
+
+        }
+
+        binding.enterGroupBTN.setOnClickListener{
+
+        }
+
         val placeholderChats = mutableListOf<Chat>(
             Chat(
                 id = "ZapDosBrabo",
