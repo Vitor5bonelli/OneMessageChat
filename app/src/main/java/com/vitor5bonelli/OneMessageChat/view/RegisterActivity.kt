@@ -49,7 +49,6 @@ class RegisterActivity : AppCompatActivity() {
             }
             else{
                 createUser(username, email, password)
-                switchToLoginView()
             }
         }
 
@@ -70,6 +69,7 @@ class RegisterActivity : AppCompatActivity() {
                 databaseReference.child(newUser.id).setValue(newUser).addOnSuccessListener {
                     Log.i("UserDatabaseSuccess", "$newUser")
                     Toast.makeText(this, "User created successfully!", Toast.LENGTH_LONG).show()
+                    switchToLoginView()
 
                 }.addOnFailureListener {
                     Log.i("UserDatabaseFail", "$newUser")
