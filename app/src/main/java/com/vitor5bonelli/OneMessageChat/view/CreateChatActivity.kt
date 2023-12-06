@@ -3,12 +3,8 @@ package com.vitor5bonelli.OneMessageChat.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
-import com.vitor5bonelli.OneMessageChat.R
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityCreateChatBinding
 import com.vitor5bonelli.OneMessageChat.model.Chat
-import com.vitor5bonelli.OneMessageChat.model.User
 import com.vitor5bonelli.OneMessageChat.repository.ChatRepository
 
 class CreateChatActivity : AppCompatActivity() {

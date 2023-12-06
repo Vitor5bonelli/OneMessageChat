@@ -38,6 +38,12 @@ class ChatListActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        adapter.onItemClick = {
+            val intent = Intent(this, EditChatActivity::class.java)
+            intent.putExtra("chat", it)
+            startActivity(intent)
+        }
+
         database.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists()){

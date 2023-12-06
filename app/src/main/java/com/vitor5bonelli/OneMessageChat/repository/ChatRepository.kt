@@ -15,10 +15,12 @@ class ChatRepository {
     private var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
 
     fun createChat(chat: Chat){
-        database.child(chat.id).setValue(chat).addOnSuccessListener {
-            Log.i("Chat", "Created with sucess!")
-        }.addOnFailureListener {
-            Log.i("Chat", "Creation failed!")
+        chat.id?.let {
+            database.child(it).setValue(chat).addOnSuccessListener {
+                Log.i("Chat", "Created with sucess!")
+            }.addOnFailureListener {
+                Log.i("Chat", "Creation failed!")
+            }
         }
     }
 

@@ -19,6 +19,8 @@ class ChatListAdapter(
     private val chats : List<Chat>,
 
 ) : RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
+
+    var onItemClick: ((Chat) -> Unit)? = null
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(chat: Chat) {
             val id = itemView.findViewById<TextView>(R.id.identificadorChatTV)
@@ -38,6 +40,10 @@ class ChatListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chat = chats[position]
         holder.bind(chat)
+
+        holder.itemView.setOnClickListener{
+            onItemClick?.invoke(chat)
+        }
     }
 
     override fun getItemCount(): Int = chats.size
