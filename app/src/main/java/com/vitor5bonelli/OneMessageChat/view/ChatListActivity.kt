@@ -1,9 +1,11 @@
 package com.vitor5bonelli.OneMessageChat.view
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,6 +22,8 @@ import java.util.UUID
 
 class ChatListActivity : AppCompatActivity() {
     private var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
+    private var databaseUsers: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
     private lateinit var binding: ActivityChatListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +36,7 @@ class ChatListActivity : AppCompatActivity() {
 
         val chatList = mutableListOf<Chat>()
         val adapter = ChatListAdapter(context = this, chats = chatList)
-        var recyclerView = binding.recyclerView
+        val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -67,56 +71,92 @@ class ChatListActivity : AppCompatActivity() {
             finish()
         }
 
+        val userEmail = intent.getStringExtra("email")
+
+
         binding.createGroupBTN.setOnClickListener{
-            switchToCreateChatView()
-        }
+            var userId: String? = null
 
-        binding.enterGroupBTN.setOnClickListener{
-            switchToEnterChatView()
-        }
-
-    }
-
-    private fun switchToCreateChatView(){
-        val intent = Intent(this, CreateChatActivity::class.java)
-        saveUserId(intent)
-        startActivity(intent)
-    }
-
-    private fun switchToEnterChatView(){
-        val intent = Intent(this, EnterChatActivity::class.java)
-        saveUserId(intent)
-        startActivity(intent)
-    }
-
-    private fun saveToIntentUserIdFromEmail(email: String, intent: Intent){
-        val databaseUser: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
-
-        fun getIdFromEmail(email: String) {
-            databaseUser.addListenerForSingleValueEvent(object : ValueEventListener {
+            databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (userSnapshot in dataSnapshot.children) {
                         val user = userSnapshot.getValue(User::class.java)
-                        if (user?.email == email) {
-                            val userId = user.id
-                            intent.putExtra("userId", userId)
-                            break
+
+                        if (user != null) {
+                            if (user.email == userEmail) {
+                                userId = user.id
+
+                                val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
+                                intent.putExtra("userId", userId)
+                                startActivity(intent)
+                            }
                         }
+
                     }
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    println("Erro while searching for user: ${databaseError.message}")
+                    Log.e("ERROR","Error fetching user: ${databaseError.message}")
+                }
+            })
+        }
+
+        binding.enterGroupBTN.setOnClickListener{
+
+            var userId: String? = null
+
+            databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (userSnapshot in dataSnapshot.children) {
+                        val user = userSnapshot.getValue(User::class.java)
+
+                        if (user != null) {
+                            if (user.email == userEmail) {
+                                userId = user.id
+
+                                val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
+                                intent.putExtra("userId", userId)
+                                startActivity(intent)
+                            }
+                        }
+
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.e("ERROR","Error fetching user: ${databaseError.message}")
                 }
             })
         }
 
     }
 
-    private fun saveUserId(intent: Intent){
+    /*
+    private fun saveUserId(){
         val userEmail = intent.getStringExtra("email")
-        if (userEmail != null) {
-            saveToIntentUserIdFromEmail(userEmail, intent)
-        }
-    }
+
+        var userId: String? = null
+
+        databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (userSnapshot in dataSnapshot.children) {
+                    val user = userSnapshot.getValue(User::class.java)
+
+                    if (user != null) {
+                        if (user.email == userEmail) {
+                            userId = user.id
+                            Toast.makeText(this@ChatListActivity, "Id encontrado no loop: ${userId}", Toast.LENGTH_LONG).show()
+                        }
+                    }
+
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("Erro ao buscar dados: ${databaseError.message}")
+            }
+        })
+
+    }*/
+
 }

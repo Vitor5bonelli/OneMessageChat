@@ -3,6 +3,7 @@ package com.vitor5bonelli.OneMessageChat.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityCreateChatBinding
 import com.vitor5bonelli.OneMessageChat.model.Chat
 import com.vitor5bonelli.OneMessageChat.repository.ChatRepository
@@ -20,6 +21,14 @@ class CreateChatActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        val userId = intent.getStringExtra("userId")
+
+        if (userId != null) {
+            Toast.makeText(this, "Found user id! ${userId}", Toast.LENGTH_LONG).show()
+        } else{
+            Toast.makeText(this, "Fudeu", Toast.LENGTH_LONG).show()
+        }
 
         binding.backBTN.setOnClickListener{
             finish()
