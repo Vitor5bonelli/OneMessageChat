@@ -10,7 +10,6 @@ import com.vitor5bonelli.OneMessageChat.model.User
 class UserRepository {
     private val databaseReference: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
-    // Adicionar um novo usuário
     fun addUser(user: User) {
         val userId = databaseReference.push().key
         userId?.let {
@@ -19,7 +18,6 @@ class UserRepository {
         }
     }
 
-    // Obter detalhes de um usuário por ID
     fun getUserById(userId: String, callback: (User?) -> Unit) {
         databaseReference.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -33,12 +31,10 @@ class UserRepository {
         })
     }
 
-    // Atualizar detalhes de um usuário existente
     fun updateUser(user: User) {
         databaseReference.child(user.id).setValue(user)
     }
 
-    // Deletar um usuário por ID
     fun deleteUser(userId: String) {
         databaseReference.child(userId).removeValue()
     }

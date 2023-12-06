@@ -7,28 +7,24 @@ import java.util.ArrayList
 
 data class Chat(
     var id: String? = "",
-    var message: String? = "",
-    var members: ArrayList<String>? = arrayListOf<String>()
+    var message: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
-        parcel.createStringArrayList()
     )
 
     @Exclude
     fun toMap(): Map<String, Any?> {
         return mapOf(
             "id" to id,
-            "message" to message,
-            "members" to members
+            "message" to message
         )
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(message)
-        parcel.writeStringList(members)
     }
 
     override fun describeContents(): Int {

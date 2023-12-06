@@ -18,11 +18,13 @@ import com.vitor5bonelli.OneMessageChat.databinding.ActivityChatListBinding
 import com.vitor5bonelli.OneMessageChat.model.Chat
 import com.vitor5bonelli.OneMessageChat.model.User
 import com.vitor5bonelli.OneMessageChat.repository.ChatRepository
+import com.vitor5bonelli.OneMessageChat.repository.UserRepository
 import java.util.UUID
 
 class ChatListActivity : AppCompatActivity() {
     private var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
     private var databaseUsers: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+    private var userRepo: UserRepository = UserRepository()
 
     private lateinit var binding: ActivityChatListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,129 +36,85 @@ class ChatListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val chatList = mutableListOf<Chat>()
-        val adapter = ChatListAdapter(context = this, chats = chatList)
-        val recyclerView = binding.recyclerView
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        adapter.onItemClick = {
-            val intent = Intent(this, EditChatActivity::class.java)
-            intent.putExtra("chat", it)
-            startActivity(intent)
-        }
-
-        database.addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-
-                    for (chatSnapshot in snapshot.children){
-                        val chat = chatSnapshot.getValue(Chat::class.java)
-                        chatList.add(chat!!)
-                    }
-
-                    adapter.notifyDataSetChanged()
-
-                }
-            }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-        binding.exitBTN.setOnClickListener{
-            finish()
-        }
-
         val userEmail = intent.getStringExtra("email")
-
-
-        binding.createGroupBTN.setOnClickListener{
-            var userId: String? = null
-
-            databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (userSnapshot in dataSnapshot.children) {
-                        val user = userSnapshot.getValue(User::class.java)
-
-                        if (user != null) {
-                            if (user.email == userEmail) {
-                                userId = user.id
-
-                                val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
-                                intent.putExtra("userId", userId)
-                                startActivity(intent)
-                            }
-                        }
-
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.e("ERROR","Error fetching user: ${databaseError.message}")
-                }
-            })
-        }
-
-        binding.enterGroupBTN.setOnClickListener{
-
-            var userId: String? = null
-
-            databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    for (userSnapshot in dataSnapshot.children) {
-                        val user = userSnapshot.getValue(User::class.java)
-
-                        if (user != null) {
-                            if (user.email == userEmail) {
-                                userId = user.id
-
-                                val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
-                                intent.putExtra("userId", userId)
-                                startActivity(intent)
-                            }
-                        }
-
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Log.e("ERROR","Error fetching user: ${databaseError.message}")
-                }
-            })
-        }
-
-    }
-
-    /*
-    private fun saveUserId(){
-        val userEmail = intent.getStringExtra("email")
-
-        var userId: String? = null
 
         databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var userId: String? = null
+
                 for (userSnapshot in dataSnapshot.children) {
                     val user = userSnapshot.getValue(User::class.java)
 
                     if (user != null) {
                         if (user.email == userEmail) {
                             userId = user.id
-                            Toast.makeText(this@ChatListActivity, "Id encontrado no loop: ${userId}", Toast.LENGTH_LONG).show()
+
+                            val userChats = user.subscribedChats
+
+                            ////////////////////////////////////////////////
+                            val chatList = mutableListOf<Chat>()
+                            val adapter = ChatListAdapter(context = this@ChatListActivity, chats = chatList)
+                            val recyclerView = binding.recyclerView
+                            recyclerView.adapter = adapter
+                            recyclerView.layoutManager = LinearLayoutManager(this@ChatListActivity)
+
+
+                            adapter.onItemClick = {
+                                val intent = Intent(this@ChatListActivity, EditChatActivity::class.java)
+                                intent.putExtra("chat", it)
+                                startActivity(intent)
+                            }
+
+                            database.addValueEventListener(object: ValueEventListener{
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if(snapshot.exists()){
+
+                                        for (chatSnapshot in snapshot.children){
+                                            val chat = chatSnapshot.getValue(Chat::class.java)
+
+                                            if (chat != null && (chat.id in userChats)) {
+                                                chatList.add(chat)
+                                            }
+                                        }
+
+                                        adapter.notifyDataSetChanged()
+
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("ERROR","Error fetching chat: ${error.message}")
+
+                                }
+
+                            })
+
+                            ///////////////////////////////////////////////
+                            binding.createGroupBTN.setOnClickListener {
+                                val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
+                                intent.putExtra("userId", userId)
+                                startActivity(intent)
+                            }
+
+                            binding.enterGroupBTN.setOnClickListener {
+                                val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
+                                intent.putExtra("userId", userId)
+                                startActivity(intent)
+                            }
                         }
                     }
+                }
 
+                if (userId == null) {
+                    Log.e("ERROR", "User with $userEmail not found.")
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                println("Erro ao buscar dados: ${databaseError.message}")
+                Log.e("ERROR", "Error fetching user: ${databaseError.message}")
             }
         })
 
-    }*/
+    }
 
 }
