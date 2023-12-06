@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.vitor5bonelli.OneMessageChat.R
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityCreateChatBinding
+import com.vitor5bonelli.OneMessageChat.model.Chat
 
 class CreateChatActivity : AppCompatActivity() {
 
@@ -19,6 +20,15 @@ class CreateChatActivity : AppCompatActivity() {
 
         binding.backBTN.setOnClickListener{
             finish()
+        }
+
+        binding.createBTN.setOnClickListener{
+
+            val idChat = binding.idInputET.text.toString()
+            val msgChat = binding.msgET.text.toString()
+
+            val chat = Chat(id = idChat, message = msgChat)
+            
         }
     }
 }

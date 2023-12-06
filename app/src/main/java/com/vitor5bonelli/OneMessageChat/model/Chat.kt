@@ -5,5 +5,5 @@ import java.util.UUID
 data class Chat (
     val id: String,
     val message: String,
-    val members: List<UUID>
+    val members: List<UUID> = listOf()
 )
