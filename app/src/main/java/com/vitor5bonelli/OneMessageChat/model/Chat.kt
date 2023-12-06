@@ -14,10 +14,7 @@ data class Chat(
         parcel.readString(),
         parcel.readString(),
         parcel.createStringArrayList()
-    ) {
-    }
-
-    constructor() : this("", "", arrayListOf())
+    )
 
     @Exclude
     fun toMap(): Map<String, Any?> {
