@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
             if(task.isSuccessful){
 
                 Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show()
-                switchToChatListView()
+                switchToChatListView(email)
 
             }
             else{
@@ -75,8 +75,9 @@ class LoginActivity : AppCompatActivity() {
         this.finish()
     }
 
-    private fun switchToChatListView(){
+    private fun switchToChatListView(email: String){
         val intent = Intent(this, ChatListActivity::class.java)
+        intent.putExtra("email", email)
         startActivity(intent)
         this.finish()
     }

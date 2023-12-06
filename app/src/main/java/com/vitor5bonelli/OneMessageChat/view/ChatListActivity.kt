@@ -21,8 +21,6 @@ import java.util.UUID
 class ChatListActivity : AppCompatActivity() {
     private var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
     private lateinit var binding: ActivityChatListBinding
-    private var chatRepo: ChatRepository = ChatRepository()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatListBinding.inflate(layoutInflater)
@@ -81,12 +79,44 @@ class ChatListActivity : AppCompatActivity() {
 
     private fun switchToCreateChatView(){
         val intent = Intent(this, CreateChatActivity::class.java)
+        saveUserId(intent)
         startActivity(intent)
     }
 
     private fun switchToEnterChatView(){
         val intent = Intent(this, EnterChatActivity::class.java)
+        saveUserId(intent)
         startActivity(intent)
     }
 
+    private fun saveToIntentUserIdFromEmail(email: String, intent: Intent){
+        val databaseUser: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
+        fun getIdFromEmail(email: String) {
+            databaseUser.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (userSnapshot in dataSnapshot.children) {
+                        val user = userSnapshot.getValue(User::class.java)
+                        if (user?.email == email) {
+                            val userId = user.id
+                            intent.putExtra("userId", userId)
+                            break
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    println("Erro while searching for user: ${databaseError.message}")
+                }
+            })
+        }
+
+    }
+
+    private fun saveUserId(intent: Intent){
+        val userEmail = intent.getStringExtra("email")
+        if (userEmail != null) {
+            saveToIntentUserIdFromEmail(userEmail, intent)
+        }
+    }
 }
