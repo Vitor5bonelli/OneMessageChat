@@ -28,26 +28,30 @@ class ChatListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        binding.createGroupBTN.setOnClickListener{
+        binding.exitBTN.setOnClickListener{
+            finish()
+        }
 
+        binding.createGroupBTN.setOnClickListener{
+            switchToCreateChatView()
         }
 
         binding.enterGroupBTN.setOnClickListener{
-
+            switchToEnterChatView()
         }
 
         val placeholderChats = mutableListOf<Chat>(
             Chat(
-                id = "ZapDosBrabo",
-                message = "ZAPZAPZAPAZPAZPAPPA",
+                id = "GrupoMassa",
+                message = "Só os brabo aqui",
                 members = listOf(
                     UUID.randomUUID(),
                     UUID.randomUUID(),
                     UUID.randomUUID()
                 )),
             Chat(
-                id = "IlhaDaMonkeizada",
-                message = "become monke...",
+                id = "JogosOnline",
+                message = "Jogos Gratis",
                 members = listOf(
                     UUID.randomUUID(),
                     UUID.randomUUID(),
