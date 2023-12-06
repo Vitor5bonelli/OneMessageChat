@@ -32,6 +32,33 @@ class ChatListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        val chatList = mutableListOf<Chat>()
+        val adapter = ChatListAdapter(context = this, chats = chatList)
+        var recyclerView = binding.recyclerView
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        database.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists()){
+
+                    for (chatSnapshot in snapshot.children){
+                        val chat = chatSnapshot.getValue(Chat::class.java)
+                        chatList.add(chat!!)
+                    }
+
+                    adapter.notifyDataSetChanged()
+
+                }
+            }
+
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
         binding.exitBTN.setOnClickListener{
             finish()
         }
@@ -44,52 +71,6 @@ class ChatListActivity : AppCompatActivity() {
             switchToEnterChatView()
         }
 
-        val placeholderChats = mutableListOf<Chat>(
-            Chat(
-                id = "GrupoMassa",
-                message = "Só os brabo aqui",
-                members = listOf(
-                    "djsaioJ#joijdsA",
-                    "djsaioJ#joijdsA2",
-                    "djsaioJ#joijdsA3"
-
-                )),
-            Chat(
-                id = "JogosOnline",
-                message = "Jogos Gratis",
-                members = listOf(
-                    "djsaioJ#joijdsA",
-                    "djsaioJ#joijdsA2",
-                    "djsaioJ#joijdsA3"
-                )
-            )
-        )
-
-        val chatList = mutableListOf<Chat>()
-
-        database.addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot.exists()){
-
-                    for (chatSnapshot in snapshot.children){
-                        var chat = chatSnapshot.getValue(Chat::class.java)
-                        chatList.add(chat!!)
-                    }
-
-                }
-            }
-
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-
-        val recyclerView = binding.recyclerView
-        recyclerView.adapter = ChatListAdapter(context = this, chats = chatList)
-        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun switchToCreateChatView(){
