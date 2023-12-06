@@ -38,9 +38,8 @@ class EditChatActivity : AppCompatActivity() {
     }
 
     private fun updateChat(chatId: String, chatMsg: String){
-        var database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
+        val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("Chats")
         val chatData = mapOf<String, String>(
-            "id" to chatId,
             "message" to chatMsg
         )
 
