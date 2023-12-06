@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.firestore
 import com.vitor5bonelli.OneMessageChat.databinding.ActivityRegisterBinding
 import com.vitor5bonelli.OneMessageChat.model.User
 
