@@ -1,5 +1,6 @@
 package com.vitor5bonelli.OneMessageChat.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -58,6 +59,16 @@ class ChatListActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = ChatListAdapter(context = this, chats = placeholderChats)
         recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun switchToCreateChatView(){
+        val intent = Intent(this, CreateChatActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun switchToEnterChatView(){
+        val intent = Intent(this, EnterChatActivity::class.java)
+        startActivity(intent)
     }
 
 }
