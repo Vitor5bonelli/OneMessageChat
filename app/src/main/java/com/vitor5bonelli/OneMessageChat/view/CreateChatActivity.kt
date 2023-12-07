@@ -31,12 +31,6 @@ class CreateChatActivity : AppCompatActivity() {
 
         val userId = intent.getStringExtra("userId")
 
-        if (userId != null) {
-            Toast.makeText(this, "Found user id! ${userId}", Toast.LENGTH_LONG).show()
-        } else{
-            Toast.makeText(this, "Fudeu", Toast.LENGTH_LONG).show()
-        }
-
         binding.backBTN.setOnClickListener{
             finish()
         }
