@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -45,65 +46,84 @@ class ChatListActivity : AppCompatActivity() {
                 for (userSnapshot in dataSnapshot.children) {
                     val user = userSnapshot.getValue(User::class.java)
 
-                    if (user != null) {
-                        if (user.email == userEmail) {
-                            userId = user.id
+                    if (user != null && user.email == userEmail) {
+                        userId = user.id
 
-                            val userChats = user.subscribedChats
+                        val userChats = user.subscribedChats
 
-                            val chatList = mutableListOf<Chat>()
-                            val adapter = ChatListAdapter(context = this@ChatListActivity, chats = chatList)
-                            val recyclerView = binding.recyclerView
-                            recyclerView.adapter = adapter
-                            recyclerView.layoutManager = LinearLayoutManager(this@ChatListActivity)
+                        val chatList = mutableListOf<Chat>()
+                        val adapter = ChatListAdapter(context = this@ChatListActivity, chats = chatList)
+                        val recyclerView = binding.recyclerView
+                        recyclerView.adapter = adapter
+                        recyclerView.layoutManager = LinearLayoutManager(this@ChatListActivity)
 
+                        adapter.onItemClick = {
+                            val intent = Intent(this@ChatListActivity, EditChatActivity::class.java)
+                            intent.putExtra("chat", it)
+                            startActivity(intent)
+                        }
 
-                            adapter.onItemClick = {
-                                val intent = Intent(this@ChatListActivity, EditChatActivity::class.java)
-                                intent.putExtra("chat", it)
-                                startActivity(intent)
-                            }
+                        val chatEventListener = object : ChildEventListener {
+                            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                                val chat = snapshot.getValue(Chat::class.java)
 
-                            database.addValueEventListener(object: ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if(snapshot.exists()){
-
-                                        adapter.notifyDataSetChanged()
-
-                                        for (chatSnapshot in snapshot.children){
-                                            val chat = chatSnapshot.getValue(Chat::class.java)
-
-                                            if (chat != null && (chat.id in userChats)) {
-                                                chatList.add(chat)
-
-                                            }
-                                        }
-
-                                    }
+                                if (chat != null && chat.id in userChats) {
+                                    chatList.add(chat)
+                                    adapter.notifyDataSetChanged()
                                 }
+                            }
 
-                                override fun onCancelled(error: DatabaseError) {
-                                    Log.e("ERROR","Error fetching chat: ${error.message}")
+                            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                                val chat = snapshot.getValue(Chat::class.java)
+                                val chatId = snapshot.key
 
+                                val index = chatList.indexOfFirst { it.id == chatId }
+                                if (index != -1 && chat != null) {
+                                    chatList[index] = chat
+                                    adapter.notifyItemChanged(index)
                                 }
-
-                            })
-
-                            binding.createGroupBTN.setOnClickListener {
-                                val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
-                                intent.putExtra("userId", userId)
-                                startActivity(intent)
                             }
 
-                            binding.enterGroupBTN.setOnClickListener {
-                                val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
-                                intent.putExtra("userId", userId)
-                                startActivity(intent)
+                            override fun onChildRemoved(snapshot: DataSnapshot) {
+                                val chatId = snapshot.key
+
+                                val index = chatList.indexOfFirst { it.id == chatId }
+                                if (index != -1) {
+                                    chatList.removeAt(index)
+                                    adapter.notifyItemRemoved(index)
+                                }
                             }
 
-                            binding.exitBTN.setOnClickListener{
-                                finish()
+                            override fun onChildMoved(
+                                snapshot: DataSnapshot,
+                                previousChildName: String?
+                            ) {
+                                TODO("Not yet implemented")
                             }
+
+                            // Implemente os outros métodos do ChildEventListener conforme necessário
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("ERROR", "Error fetching chat: ${error.message}")
+                            }
+                        }
+
+                        database.addChildEventListener(chatEventListener)
+
+                        binding.createGroupBTN.setOnClickListener {
+                            val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
+                            intent.putExtra("userId", userId)
+                            startActivity(intent)
+                        }
+
+                        binding.enterGroupBTN.setOnClickListener {
+                            val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
+                            intent.putExtra("userId", userId)
+                            startActivity(intent)
+                        }
+
+                        binding.exitBTN.setOnClickListener{
+                            finish()
                         }
                     }
                 }
