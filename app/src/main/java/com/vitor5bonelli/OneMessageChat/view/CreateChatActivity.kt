@@ -20,7 +20,6 @@ class CreateChatActivity : AppCompatActivity() {
     private var chatRepo: ChatRepository = ChatRepository()
     private var databaseUsers: DatabaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCreateChatBinding.inflate(layoutInflater)
