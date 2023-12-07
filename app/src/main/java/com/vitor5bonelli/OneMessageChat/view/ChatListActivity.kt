@@ -51,7 +51,6 @@ class ChatListActivity : AppCompatActivity() {
 
                             val userChats = user.subscribedChats
 
-                            ////////////////////////////////////////////////
                             val chatList = mutableListOf<Chat>()
                             val adapter = ChatListAdapter(context = this@ChatListActivity, chats = chatList)
                             val recyclerView = binding.recyclerView
@@ -89,7 +88,6 @@ class ChatListActivity : AppCompatActivity() {
 
                             })
 
-                            ///////////////////////////////////////////////
                             binding.createGroupBTN.setOnClickListener {
                                 val intent = Intent(this@ChatListActivity, CreateChatActivity::class.java)
                                 intent.putExtra("userId", userId)
@@ -100,6 +98,10 @@ class ChatListActivity : AppCompatActivity() {
                                 val intent = Intent(this@ChatListActivity, EnterChatActivity::class.java)
                                 intent.putExtra("userId", userId)
                                 startActivity(intent)
+                            }
+
+                            binding.exitBTN.setOnClickListener{
+                                finish()
                             }
                         }
                     }
