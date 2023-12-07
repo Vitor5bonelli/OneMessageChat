@@ -68,15 +68,16 @@ class ChatListActivity : AppCompatActivity() {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     if(snapshot.exists()){
 
+                                        adapter.notifyDataSetChanged()
+
                                         for (chatSnapshot in snapshot.children){
                                             val chat = chatSnapshot.getValue(Chat::class.java)
 
                                             if (chat != null && (chat.id in userChats)) {
                                                 chatList.add(chat)
+
                                             }
                                         }
-
-                                        adapter.notifyDataSetChanged()
 
                                     }
                                 }

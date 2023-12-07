@@ -30,26 +30,26 @@ class EnterChatActivity : AppCompatActivity() {
 
         val userId = intent.getStringExtra("userId")
 
-        binding.sendBTN.setOnClickListener{
+        binding.sendBTN.setOnClickListener {
             val idChat = binding.idInputET.text.toString()
 
-            databaseChats.child(idChat).get().addOnSuccessListener {
+            databaseChats.child(idChat).get().addOnSuccessListener { chatSnapshot ->
+                if (chatSnapshot.exists()) {
+                    databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            var userFound = false
 
-                databaseUsers.addListenerForSingleValueEvent(object : ValueEventListener {
+                            for (userSnapshot in dataSnapshot.children) {
+                                val user = userSnapshot.getValue(User::class.java)
 
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        for (userSnapshot in dataSnapshot.children) {
-                            val user = userSnapshot.getValue(User::class.java)
+                                if (user != null && user.id == userId) {
+                                    userFound = true
 
-                            if (user != null) {
-                                if (user.id == userId) {
-
-                                    if(idChat in user.subscribedChats){
+                                    if (idChat in user.subscribedChats) {
                                         Toast.makeText(this@EnterChatActivity, "You already subscribed to that chat!", Toast.LENGTH_LONG).show()
-                                    }
-                                    else{
+                                    } else {
                                         val updatedSubscribedChats = user.subscribedChats.toMutableList()
-                                        idChat.let { it1 -> updatedSubscribedChats.add(it1) }
+                                        updatedSubscribedChats.add(idChat)
 
                                         val updatedUser = User(
                                             id = user.id,
@@ -59,32 +59,34 @@ class EnterChatActivity : AppCompatActivity() {
                                             subscribedChats = updatedSubscribedChats
                                         )
 
-                                        userId.let {
-                                            databaseUsers.child(it).setValue(updatedUser).addOnSuccessListener {
-                                                Log.i("Chat", "Created with sucess!")
-                                            }.addOnFailureListener {
-                                                Log.i("Chat", "Creation failed!")
+                                        databaseUsers.child(userId!!).setValue(updatedUser)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this@EnterChatActivity, "Subscribed successfully to $idChat!", Toast.LENGTH_LONG).show()
+                                                finish()
                                             }
-                                        }
-
-                                        Toast.makeText(this@EnterChatActivity, "Subscribed successfully to ${idChat}!", Toast.LENGTH_LONG).show()
-                                        finish()
+                                            .addOnFailureListener {
+                                                Log.e("ERROR", "Failed to update user with subscribed chat")
+                                            }
                                     }
-
+                                    break
                                 }
                             }
 
+                            if (!userFound) {
+                                Toast.makeText(this@EnterChatActivity, "User not found", Toast.LENGTH_LONG).show()
+                            }
                         }
-                    }
 
-                    override fun onCancelled(databaseError: DatabaseError) {
-                        Log.e("ERROR","Error fetching user: ${databaseError.message}")
-                    }
-                })
-            }.addOnFailureListener{
-                Toast.makeText(this, "Chat dosen't exists or invalid ID!", Toast.LENGTH_LONG).show()
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            Log.e("ERROR", "Error fetching user: ${databaseError.message}")
+                        }
+                    })
+                } else {
+                    Toast.makeText(this@EnterChatActivity, "Chat doesn't exist or invalid ID!", Toast.LENGTH_LONG).show()
+                }
             }
         }
+
 
         binding.backBTN.setOnClickListener{
             finish()
